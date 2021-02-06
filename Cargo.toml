@@ -5,7 +5,7 @@ version = "0.1.0"
 license = "BSD-2-Clause"
 authors = ["Maarten de Vries <maarten@de-vri.es>"]
 keywords = ["websocket", "hyper", "async"]
-categories = ["web-programming:websocket", "network-programming"]
+categories = ["web-programming::websocket", "network-programming"]
 repository = "https://github.com/de-vri-es/hyper-tungstenite-rs"
 documentation = "https://docs.rs/hyper-tungstenite"
 

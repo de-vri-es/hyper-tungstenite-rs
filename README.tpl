@@ -7,4 +7,4 @@
 
 [`upgrade`]: https://docs.rs/hyper-tungstenite/latest/hyper_tungstenite/fn.upgrade.html
 [`WebSocketStream`]: https://docs.rs/hyper-tungstenite/latest/hyper_tungstenite/struct.WebSocketStream.html
-[`upgrade_requested`]: https://docs.rs/hyper-tungstenite/latest/hyper_tungstenite/fn.upgrade_requested.html
+[`is_upgrade_request`]: https://docs.rs/hyper-tungstenite/latest/hyper_tungstenite/fn.is_upgrade_request.html

@@ -11,7 +11,7 @@ The response must be sent to the client for the future to be resolved.
 In practise this means that you must spawn the future in a different task.
 
 Note that the [`upgrade`] function itself does not check if the request is actually an upgrade request.
-For simple cases, you can check this using the [`upgrade_requested`] function before calling [`upgrade`].
+For simple cases, you can check this using the [`is_upgrade_request`] function before calling [`upgrade`].
 For more complicated cases where the server should support multiple upgrade protocols,
 you can manually inspect the `Connection` and `Upgrade` headers.
 
@@ -25,7 +25,7 @@ use tungstenite::Message;
 /// Handle a HTTP or WebSocket request.
 async fn handle_request(request: Request<Body>) -> Result<Response<Body>, Box<dyn std::error::Error>> {
     // Check if the request is a websocket upgrade request.
-    if hyper_tungstenite::upgrade_requested(&request) {
+    if hyper_tungstenite::is_upgrade_request(&request) {
         let (response, websocket) = hyper_tungstenite::upgrade(request, None)?;
 
         // Spawn a task to handle the websocket connection.
@@ -62,4 +62,4 @@ async fn serve_websocket(websocket: HyperWebsocket) -> Result<(), Box<dyn std::e
 
 [`upgrade`]: https://docs.rs/hyper-tungstenite/latest/hyper_tungstenite/fn.upgrade.html
 [`WebSocketStream`]: https://docs.rs/hyper-tungstenite/latest/hyper_tungstenite/struct.WebSocketStream.html
-[`upgrade_requested`]: https://docs.rs/hyper-tungstenite/latest/hyper_tungstenite/fn.upgrade_requested.html
+[`is_upgrade_request`]: https://docs.rs/hyper-tungstenite/latest/hyper_tungstenite/fn.is_upgrade_request.html

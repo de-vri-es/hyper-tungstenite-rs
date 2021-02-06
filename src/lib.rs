@@ -6,7 +6,7 @@
 //! In practise this means that you must spawn the future in a different task.
 //!
 //! Note that the [`upgrade`] function itself does not check if the request is actually an upgrade request.
-//! For simple cases, you can check this using the [`upgrade_requested`] function before calling [`upgrade`].
+//! For simple cases, you can check this using the [`is_upgrade_request`] function before calling [`upgrade`].
 //! For more complicated cases where the server should support multiple upgrade protocols,
 //! you can manually inspect the `Connection` and `Upgrade` headers.
 //!
@@ -21,7 +21,7 @@
 //! /// Handle a HTTP or WebSocket request.
 //! async fn handle_request(request: Request<Body>) -> Result<Response<Body>, Box<dyn std::error::Error>> {
 //!     // Check if the request is a websocket upgrade request.
-//!     if hyper_tungstenite::upgrade_requested(&request) {
+//!     if hyper_tungstenite::is_upgrade_request(&request) {
 //!         let (response, websocket) = hyper_tungstenite::upgrade(request, None)?;
 //!
 //!         // Spawn a task to handle the websocket connection.
@@ -83,7 +83,7 @@ pub struct HyperWebsocket {
 /// and modify the response headers appropriately.
 ///
 /// This function also does not look at the `Connection` or `Upgrade` headers.
-/// To check if a request is a websocket upgrade request, you can use [`upgrade_requested`].
+/// To check if a request is a websocket upgrade request, you can use [`is_upgrade_request`].
 /// Alternatively you can inspect the `Connection` and `Upgrade` headers manually.
 ///
 pub fn upgrade(request: Request<Body>, config: Option<WebSocketConfig>) -> Result<(Response<Body>, HyperWebsocket)> {
@@ -116,7 +116,7 @@ pub fn upgrade(request: Request<Body>, config: Option<WebSocketConfig>) -> Resul
 /// this function returns true if of them are `"websocket"`,
 /// If the server supports multiple upgrade protocols,
 /// it would be more appropriate to try each listed protocol in order.
-pub fn upgrade_requested<B>(request: &hyper::Request<B>) -> bool {
+pub fn is_upgrade_request<B>(request: &hyper::Request<B>) -> bool {
 	// Check for "Connection: upgrade" header.
 	if let Some(connection) = request.headers().get(hyper::header::CONNECTION) {
 		if !connection.as_bytes().eq_ignore_ascii_case(b"upgrade") {

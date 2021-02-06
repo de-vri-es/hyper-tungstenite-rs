@@ -36,7 +36,7 @@ async fn hyper() {
 }
 
 async fn upgrade_websocket(request: Request<Body>) -> Result<Response<Body>> {
-	assert!(hyper_tungstenite::upgrade_requested(&request) == true);
+	assert!(hyper_tungstenite::is_upgrade_request(&request) == true);
 
 	let (response, stream) = hyper_tungstenite::upgrade(request, None)?;
 	tokio::spawn(async move {

@@ -1,4 +1,4 @@
-# v0.2.1
+# v0.2.1 - 2021-02-12
 * Inspect all `Connection` and `Upgrade` headers in `is_upgrade_request()`.
 * Inspect all comma separated values in `Connection` headers in `is_upgrade_request()` (this was already done for `Upgrade` headers).
 

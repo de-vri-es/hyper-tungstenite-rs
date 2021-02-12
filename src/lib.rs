@@ -117,23 +117,39 @@ pub fn upgrade(request: Request<Body>, config: Option<WebSocketConfig>) -> Resul
 /// If the server supports multiple upgrade protocols,
 /// it would be more appropriate to try each listed protocol in order.
 pub fn is_upgrade_request<B>(request: &hyper::Request<B>) -> bool {
-	// Check for "Connection: upgrade" header.
-	if let Some(connection) = request.headers().get(hyper::header::CONNECTION) {
-		if !connection.as_bytes().eq_ignore_ascii_case(b"upgrade") {
-			return false;
+	header_contains_value(request.headers(), hyper::header::CONNECTION, "Upgrade")
+		&& header_contains_value(request.headers(), hyper::header::UPGRADE, "websocket")
+}
+
+/// Check if there is a header of the given name containing the wanted value.
+fn header_contains_value(headers: &hyper::HeaderMap, header: impl hyper::header::AsHeaderName, value: impl AsRef<[u8]>) -> bool {
+	let value = value.as_ref();
+	for header in headers.get_all(header) {
+		if header.as_bytes().split(|&c| c == b',').any(|x| trim(x).eq_ignore_ascii_case(value)) {
+			return true;
 		}
 	}
-
-	// Check for "Upgrade: websocket" header.
-	if let Some(upgrade) = request.headers().get(hyper::header::UPGRADE) {
-		if let Ok(upgrade) = upgrade.to_str() {
-			if upgrade.split(',').any(|x| x.trim().eq_ignore_ascii_case("websocket")) {
-				return true;
-			}
-		}
-	}
-
 	false
+}
+
+fn trim(data: &[u8]) -> &[u8] {
+	trim_end(trim_start(data))
+}
+
+fn trim_start(data: &[u8]) -> &[u8] {
+	if let Some(start) =data.iter().position(|x| !x.is_ascii_whitespace()) {
+		&data[start..]
+	} else {
+		b""
+	}
+}
+
+fn trim_end(data: &[u8]) -> &[u8] {
+	if let Some(last) = data.iter().rposition(|x| !x.is_ascii_whitespace()) {
+		&data[..last + 1]
+	} else {
+		b""
+	}
 }
 
 fn protocol_error(message: impl Into<std::borrow::Cow<'static, str>>) -> Error {

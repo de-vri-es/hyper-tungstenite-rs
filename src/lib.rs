@@ -65,6 +65,7 @@ use tungstenite::protocol::{Role, WebSocketConfig};
 
 pub use tokio_tungstenite::tungstenite;
 pub use tokio_tungstenite::WebSocketStream;
+pub use hyper;
 
 /// A future that resolves to a websocket stream when the associated HTTP upgrade completes.
 pub struct HyperWebsocket {

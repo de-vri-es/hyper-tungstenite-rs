@@ -60,7 +60,7 @@ use hyper::{Body, Request, Response};
 use std::task::{Context, Poll};
 use std::pin::Pin;
 
-use tungstenite::{Error, Result};
+use tungstenite::{Error, error::ProtocolError};
 use tungstenite::protocol::{Role, WebSocketConfig};
 
 pub use tokio_tungstenite::tungstenite;
@@ -86,13 +86,14 @@ pub struct HyperWebsocket {
 /// To check if a request is a websocket upgrade request, you can use [`is_upgrade_request`].
 /// Alternatively you can inspect the `Connection` and `Upgrade` headers manually.
 ///
-pub fn upgrade(request: Request<Body>, config: Option<WebSocketConfig>) -> Result<(Response<Body>, HyperWebsocket)> {
+pub fn upgrade(
+	request: Request<Body>,
+	config: Option<WebSocketConfig>,
+) -> Result<(Response<Body>, HyperWebsocket), ProtocolError> {
 	let key = request.headers().get("Sec-WebSocket-Key")
-		.ok_or_else(|| protocol_error("missing \"Sec-WebSocket-Key\" header"))?;
-	let version = request.headers().get("Sec-WebSocket-Version")
-		.ok_or_else(|| protocol_error("missing \"Sec-WebSocket-Version\" header"))?;
-	if version.as_bytes() != b"13" {
-		return Err(protocol_error(format!("invalid websocket protocol version: expected 13, got {:?}", version)));
+		.ok_or(ProtocolError::MissingSecWebSocketKey)?;
+	if request.headers().get("Sec-WebSocket-Version").map(|v| v.as_bytes()) != Some(b"13") {
+		return Err(ProtocolError::MissingSecWebSocketVersionHeader);
 	}
 
 	let response = Response::builder()
@@ -100,7 +101,8 @@ pub fn upgrade(request: Request<Body>, config: Option<WebSocketConfig>) -> Resul
 		.header(hyper::header::CONNECTION, "upgrade")
 		.header(hyper::header::UPGRADE, "websocket")
 		.header("Sec-WebSocket-Accept", &convert_key(key.as_bytes()))
-		.body(Body::from("switching to websocket protocol"))?;
+		.body(Body::from("switching to websocket protocol"))
+		.expect("bug: failed to build response");
 
 	let stream = HyperWebsocket {
 		inner: hyper::upgrade::on(request),
@@ -152,10 +154,6 @@ fn trim_end(data: &[u8]) -> &[u8] {
 	}
 }
 
-fn protocol_error(message: impl Into<std::borrow::Cow<'static, str>>) -> Error {
-	tungstenite::Error::Protocol(message.into())
-}
-
 /// Turns a Sec-WebSocket-Key into a Sec-WebSocket-Accept.
 fn convert_key(input: &[u8]) -> String {
 	use sha1::Digest;
@@ -170,7 +168,7 @@ fn convert_key(input: &[u8]) -> String {
 }
 
 impl std::future::Future for HyperWebsocket {
-	type Output = Result<WebSocketStream<hyper::upgrade::Upgraded>>;
+	type Output = Result<WebSocketStream<hyper::upgrade::Upgraded>, Error>;
 
 	fn poll(mut self: Pin<&mut Self>, cx: &mut Context) -> Poll<Self::Output> {
 		let inner = unsafe { self.as_mut().map_unchecked_mut(|x| &mut x.inner) };
@@ -179,7 +177,7 @@ impl std::future::Future for HyperWebsocket {
 			Poll::Ready(x) => x,
 		};
 
-		let upgraded = upgraded.map_err(|e| protocol_error(format!("failed to upgrade HTTP connection: {}", e)))?;
+		let upgraded = upgraded.map_err(|_| Error::Protocol(ProtocolError::HandshakeIncomplete))?;
 
 		let mut stream = WebSocketStream::from_raw_socket(
 			upgraded,

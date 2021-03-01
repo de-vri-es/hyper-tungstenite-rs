@@ -15,7 +15,7 @@ edition = "2018"
 base64 = "0.13.0"
 hyper = { version = "0.14.4" }
 sha-1 = "0.9.3"
-tokio-tungstenite = "0.13.0"
+tokio-tungstenite = "0.14.0"
 
 [dev-dependencies]
 assert2 = "0.3.4"

@@ -1,3 +1,7 @@
+# v0.3.0 - 2021-03-02
+* Publicly re-export the `hyper` crate.
+* Upgrade to `tokio-tungstenite` 0.14 and `tungstenite` 0.13.
+
 # v0.2.1 - 2021-02-12
 * Inspect all `Connection` and `Upgrade` headers in `is_upgrade_request()`.
 * Inspect all comma separated values in `Connection` headers in `is_upgrade_request()` (this was already done for `Upgrade` headers).

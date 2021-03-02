@@ -1,6 +1,7 @@
 use hyper::{Body, Request, Response};
 use hyper::server::Server;
 use hyper::service::{service_fn, make_service_fn};
+use hyper_tungstenite::tungstenite::Error;
 use tokio::net::TcpStream;
 use std::net::Ipv6Addr;
 use tokio_tungstenite::tungstenite::{Message, Result};
@@ -38,7 +39,8 @@ async fn hyper() {
 async fn upgrade_websocket(request: Request<Body>) -> Result<Response<Body>> {
 	assert!(hyper_tungstenite::is_upgrade_request(&request) == true);
 
-	let (response, stream) = hyper_tungstenite::upgrade(request, None)?;
+	let (response, stream) = hyper_tungstenite::upgrade(request, None)
+		.map_err(Error::Protocol)?;
 	tokio::spawn(async move {
 		let_assert!(Ok(mut stream) = stream.await);
 		assert!(let Ok(()) = stream.send(Message::text("Hello!")).await);

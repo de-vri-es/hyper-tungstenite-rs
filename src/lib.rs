@@ -59,6 +59,7 @@
 use hyper::{Body, Request, Response};
 use std::task::{Context, Poll};
 use std::pin::Pin;
+use pin_project::pin_project;
 
 use tungstenite::{Error, error::ProtocolError};
 use tungstenite::protocol::{Role, WebSocketConfig};
@@ -68,7 +69,9 @@ pub use tokio_tungstenite::WebSocketStream;
 pub use hyper;
 
 /// A future that resolves to a websocket stream when the associated HTTP upgrade completes.
+#[pin_project]
 pub struct HyperWebsocket {
+	#[pin]
 	inner: hyper::upgrade::OnUpgrade,
 	config: Option<WebSocketConfig>,
 }
@@ -171,25 +174,25 @@ fn convert_key(input: &[u8]) -> String {
 impl std::future::Future for HyperWebsocket {
 	type Output = Result<WebSocketStream<hyper::upgrade::Upgraded>, Error>;
 
-	fn poll(mut self: Pin<&mut Self>, cx: &mut Context) -> Poll<Self::Output> {
-		let inner = unsafe { self.as_mut().map_unchecked_mut(|x| &mut x.inner) };
-		let upgraded = match inner.poll(cx) {
+	fn poll(self: Pin<&mut Self>, cx: &mut Context) -> Poll<Self::Output> {
+		let this = self.project();
+		let upgraded = match this.inner.poll(cx) {
 			Poll::Pending => return Poll::Pending,
 			Poll::Ready(x) => x,
 		};
 
 		let upgraded = upgraded.map_err(|_| Error::Protocol(ProtocolError::HandshakeIncomplete))?;
 
-		let mut stream = WebSocketStream::from_raw_socket(
+		let stream = WebSocketStream::from_raw_socket(
 			upgraded,
 			Role::Server,
-			self.config.take(),
+			this.config.take(),
 		);
-		let stream = unsafe { Pin::new_unchecked(&mut stream) };
+		tokio::pin!(stream);
 
 		// The future returned by `from_raw_socket` is always ready.
 		// Not sure why it is a future in the first place.
-		match stream.poll(cx) {
+		match stream.as_mut().poll(cx) {
 			Poll::Pending => unreachable!("from_raw_socket should always be created ready"),
 			Poll::Ready(x) => Poll::Ready(Ok(x)),
 		}

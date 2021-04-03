@@ -14,7 +14,9 @@ edition = "2018"
 [dependencies]
 base64 = "0.13.0"
 hyper = { version = "0.14.4" }
+pin-project = "1"
 sha-1 = "0.9.3"
+tokio = "1.2.0"
 tokio-tungstenite = "0.14.0"
 
 [dev-dependencies]

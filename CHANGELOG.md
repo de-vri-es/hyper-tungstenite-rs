@@ -1,3 +1,6 @@
+# v0.3.1 - 2021-04-03
+* Replace unsafe code with `pin-project` and `tokio::pin!()`.
+
 # v0.3.0 - 2021-03-02
 * Publicly re-export the `hyper` crate.
 * Upgrade to `tokio-tungstenite` 0.14 and `tungstenite` 0.13.

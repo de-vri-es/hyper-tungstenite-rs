@@ -1,3 +1,6 @@
+# v0.3.2 - 2021-04-11
+* Derive `Debug` for `HyperWebsocket` to facilitate debugging.
+
 # v0.3.1 - 2021-04-03
 * Replace unsafe code with `pin-project` and `tokio::pin!()`.
 

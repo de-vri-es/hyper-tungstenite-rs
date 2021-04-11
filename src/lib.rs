@@ -70,6 +70,7 @@ pub use hyper;
 
 /// A future that resolves to a websocket stream when the associated HTTP upgrade completes.
 #[pin_project]
+#[derive(Debug)]
 pub struct HyperWebsocket {
 	#[pin]
 	inner: hyper::upgrade::OnUpgrade,

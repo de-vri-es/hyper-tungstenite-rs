@@ -1,7 +1,7 @@
 [package]
 name = "hyper-tungstenite"
 description = "websockets for hyper servers using tungstenite"
-version = "0.3.2"
+version = "0.3.3"
 license = "BSD-2-Clause"
 authors = ["Maarten de Vries <maarten@de-vri.es>"]
 keywords = ["websocket", "hyper", "async"]

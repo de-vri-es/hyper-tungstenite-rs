@@ -62,6 +62,7 @@ use std::pin::Pin;
 use pin_project::pin_project;
 
 use tungstenite::{Error, error::ProtocolError};
+use tungstenite::handshake::derive_accept_key;
 use tungstenite::protocol::{Role, WebSocketConfig};
 
 pub use tokio_tungstenite::tungstenite;
@@ -105,7 +106,7 @@ pub fn upgrade(
 		.status(hyper::StatusCode::SWITCHING_PROTOCOLS)
 		.header(hyper::header::CONNECTION, "upgrade")
 		.header(hyper::header::UPGRADE, "websocket")
-		.header("Sec-WebSocket-Accept", &convert_key(key.as_bytes()))
+		.header("Sec-WebSocket-Accept", &derive_accept_key(key.as_bytes()))
 		.body(Body::from("switching to websocket protocol"))
 		.expect("bug: failed to build response");
 
@@ -157,19 +158,6 @@ fn trim_end(data: &[u8]) -> &[u8] {
 	} else {
 		b""
 	}
-}
-
-/// Turns a Sec-WebSocket-Key into a Sec-WebSocket-Accept.
-fn convert_key(input: &[u8]) -> String {
-	use sha1::Digest;
-
-	// ... field is constructed by concatenating /key/ ...
-	// ... with the string "258EAFA5-E914-47DA-95CA-C5AB0DC85B11" (RFC 6455)
-	const WS_GUID: &[u8] = b"258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
-	let mut sha1 = sha1::Sha1::default();
-	sha1.update(input);
-	sha1.update(WS_GUID);
-	base64::encode(sha1.finalize())
 }
 
 impl std::future::Future for HyperWebsocket {

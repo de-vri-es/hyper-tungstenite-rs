@@ -1,3 +1,6 @@
+# v0.3.3 - 2021-06-11
+* Remove `sha-1` and `base64` dependency by using upstream `derive_accept_key`.
+
 # v0.3.2 - 2021-04-11
 * Derive `Debug` for `HyperWebsocket` to facilitate debugging.
 

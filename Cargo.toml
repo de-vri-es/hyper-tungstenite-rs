@@ -15,7 +15,7 @@ edition = "2018"
 hyper = { version = "0.14.4" }
 pin-project = "1"
 tokio = "1.2.0"
-tokio-tungstenite = "0.15.0"
+tokio-tungstenite = "0.15"
 
 [dev-dependencies]
 assert2 = "0.3.4"

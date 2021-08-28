@@ -1,3 +1,6 @@
+# v0.4.0 - 2021-08-28
+* Upgrade to `tokio-tungstenite` 0.15.
+
 # v0.3.3 - 2021-06-11
 * Remove `sha-1` and `base64` dependency by using upstream `derive_accept_key`.
 

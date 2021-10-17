@@ -1,3 +1,6 @@
+# main
+* Update the example to a full server application.
+
 # v0.4.0 - 2021-08-28
 * Upgrade to `tokio-tungstenite` 0.15.
 

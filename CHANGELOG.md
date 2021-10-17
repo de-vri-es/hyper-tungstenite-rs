@@ -1,4 +1,4 @@
-# main
+# v0.4.1 - 2021-10-17
 * Update the example to a full server application.
 
 # v0.4.0 - 2021-08-28

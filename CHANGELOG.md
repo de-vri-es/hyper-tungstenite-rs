@@ -1,3 +1,6 @@
+# main
+* Fix link in documentation for re-exported `tungstenite` crate.
+
 # v0.4.1 - 2021-10-17
 * Update the example to a full server application.
 

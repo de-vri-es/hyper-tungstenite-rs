@@ -95,9 +95,10 @@ use tungstenite::{Error, error::ProtocolError};
 use tungstenite::handshake::derive_accept_key;
 use tungstenite::protocol::{Role, WebSocketConfig};
 
-pub use tokio_tungstenite::tungstenite;
-pub use tokio_tungstenite::WebSocketStream;
 pub use hyper;
+pub use tungstenite;
+
+pub use tokio_tungstenite::WebSocketStream;
 
 /// A future that resolves to a websocket stream when the associated HTTP upgrade completes.
 #[pin_project]

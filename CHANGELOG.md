@@ -1,4 +1,4 @@
-# main
+# v0.5.0 - 2021-11-19
 * Update to `tungstenite` 0.16.
 
 # v0.4.2 - 2021-11-19

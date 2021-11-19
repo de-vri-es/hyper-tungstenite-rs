@@ -1,3 +1,6 @@
+# main
+* Update to `tungstenite` 0.16.
+
 # v0.4.2 - 2021-11-19
 * Fix link in documentation for re-exported `tungstenite` crate.
 

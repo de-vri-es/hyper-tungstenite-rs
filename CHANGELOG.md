@@ -1,4 +1,4 @@
-# main
+# v0.4.2 - 2021-11-19
 * Fix link in documentation for re-exported `tungstenite` crate.
 
 # v0.4.1 - 2021-10-17

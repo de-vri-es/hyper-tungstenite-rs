@@ -69,6 +69,9 @@
 //!                     println!("Received close message");
 //!                 }
 //!             },
+//!             Message::Frame(msg) => {
+//!                unreachable!();
+//!             }
 //!         }
 //!     }
 //!

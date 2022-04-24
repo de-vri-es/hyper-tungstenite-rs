@@ -21,10 +21,10 @@
 //! type Error = Box<dyn std::error::Error + Send + Sync + 'static>;
 //!
 //! /// Handle a HTTP or WebSocket request.
-//! async fn handle_request(request: Request<Body>) -> Result<Response<Body>, Error> {
+//! async fn handle_request(mut request: Request<Body>) -> Result<Response<Body>, Error> {
 //!     // Check if the request is a websocket upgrade request.
 //!     if hyper_tungstenite::is_upgrade_request(&request) {
-//!         let (response, websocket) = hyper_tungstenite::upgrade(request, None)?;
+//!         let (response, websocket) = hyper_tungstenite::upgrade(&mut request, None)?;
 //!
 //!         // Spawn a task to handle the websocket connection.
 //!         tokio::spawn(async move {
@@ -127,7 +127,7 @@ pub struct HyperWebsocket {
 /// Alternatively you can inspect the `Connection` and `Upgrade` headers manually.
 ///
 pub fn upgrade(
-	request: Request<Body>,
+	request: &mut Request<Body>,
 	config: Option<WebSocketConfig>,
 ) -> Result<(Response<Body>, HyperWebsocket), ProtocolError> {
 	let key = request.headers().get("Sec-WebSocket-Key")

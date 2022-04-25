@@ -1,3 +1,6 @@
+# main
+* Accept either a `Request` or `&mut Request` when upgrading a connection.
+
 # v0.6.0 - 2022-02-20
 * Update to `tungstenite` 0.17.
 

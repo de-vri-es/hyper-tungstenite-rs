@@ -1,4 +1,4 @@
-# main
+# v0.7.0 - 2022-02-25
 * Accept either a `Request` or `&mut Request` when upgrading a connection.
 
 # v0.6.0 - 2022-02-20

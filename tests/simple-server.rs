@@ -36,10 +36,10 @@ async fn hyper() {
 	assert!(let Some(Ok(Message::Close(None))) = stream.next().await);
 }
 
-async fn upgrade_websocket(mut request: Request<Body>) -> Result<Response<Body>> {
+async fn upgrade_websocket(request: Request<Body>) -> Result<Response<Body>> {
 	assert!(hyper_tungstenite::is_upgrade_request(&request) == true);
 
-	let (response, stream) = hyper_tungstenite::upgrade(&mut request, None)
+	let (response, stream) = hyper_tungstenite::upgrade(request, None)
 		.map_err(Error::Protocol)?;
 	tokio::spawn(async move {
 		let_assert!(Ok(mut stream) = stream.await);

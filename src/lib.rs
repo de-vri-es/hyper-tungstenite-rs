@@ -127,9 +127,11 @@ pub struct HyperWebsocket {
 /// Alternatively you can inspect the `Connection` and `Upgrade` headers manually.
 ///
 pub fn upgrade(
-	request: &mut Request<Body>,
+	mut request: impl std::borrow::BorrowMut<Request<Body>>,
 	config: Option<WebSocketConfig>,
 ) -> Result<(Response<Body>, HyperWebsocket), ProtocolError> {
+	let request = request.borrow_mut();
+
 	let key = request.headers().get("Sec-WebSocket-Key")
 		.ok_or(ProtocolError::MissingSecWebSocketKey)?;
 	if request.headers().get("Sec-WebSocket-Version").map(|v| v.as_bytes()) != Some(b"13") {

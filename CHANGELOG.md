@@ -1,4 +1,4 @@
-# main
+# v0.8.0 - 2022-02-26
 * Allow arbitrary body types in the `Request` passed to `upgrade`.
 
 # v0.7.0 - 2022-02-25

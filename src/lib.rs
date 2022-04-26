@@ -126,8 +126,8 @@ pub struct HyperWebsocket {
 /// To check if a request is a websocket upgrade request, you can use [`is_upgrade_request`].
 /// Alternatively you can inspect the `Connection` and `Upgrade` headers manually.
 ///
-pub fn upgrade(
-	mut request: impl std::borrow::BorrowMut<Request<Body>>,
+pub fn upgrade<B>(
+	mut request: impl std::borrow::BorrowMut<Request<B>>,
 	config: Option<WebSocketConfig>,
 ) -> Result<(Response<Body>, HyperWebsocket), ProtocolError> {
 	let request = request.borrow_mut();

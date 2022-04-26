@@ -20,6 +20,6 @@ tungstenite = "0.17.0"
 
 [dev-dependencies]
 assert2 = "0.3.4"
-hyper = { version = "0.14.4", features = ["http1", "server", "tcp"] }
+hyper = { version = "0.14.18", features = ["http1", "server", "tcp"] }
 tokio = { version = "1.2.0", features = ["net", "macros", "rt-multi-thread"] }
 futures = { version = "0.3.12" }

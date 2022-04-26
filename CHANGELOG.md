@@ -1,3 +1,6 @@
+# main
+* Allow arbitrary body types in the `Request` passed to `upgrade`.
+
 # v0.7.0 - 2022-02-25
 * Accept either a `Request` or `&mut Request` when upgrading a connection.
 

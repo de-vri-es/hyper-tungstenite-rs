@@ -74,6 +74,9 @@ async fn serve_websocket(websocket: HyperWebsocket) -> Result<(), Error> {
                     println!("Received close message");
                 }
             },
+            Message::Frame(_) => {
+                unreachable!();
+            },
         }
     }
 

@@ -1,3 +1,6 @@
+# main
+* Fix the documentation for `tungstenite` 0.17.
+
 # v0.8.0 - 2022-02-26
 * Allow arbitrary body types in the `Request` passed to `upgrade`.
 

@@ -1,4 +1,4 @@
-# main
+# v0.8.1 - 2022-06-14
 * Fix the documentation for `tungstenite` 0.17.
 
 # v0.8.0 - 2022-02-26

@@ -82,10 +82,24 @@
 //! async fn main() -> Result<(), Error> {
 //!     let addr: std::net::SocketAddr = "[::1]:3000".parse()?;
 //!     println!("Listening on http://{}", addr);
-//!     hyper::Server::bind(&addr).serve(hyper::service::make_service_fn(|_connection| async {
-//!         Ok::<_, Infallible>(hyper::service::service_fn(handle_request))
-//!     })).await?;
-//!     Ok(())
+//!     let listener = tokio::net::TcpListener::bind(&addr).await?;
+//!     println!("listening on {}", addr);
+//!
+//!     let mut http = hyper::server::conn::Http::new();
+//!     http.http1_only(true);
+//!     http.http1_keep_alive(true);
+//!
+//!     loop {
+//!         let (stream, _) = listener.accept().await?;
+//!         let connection = http
+//!             .serve_connection(stream, hyper::service::service_fn(handle_request))
+//!             .with_upgrades();
+//!         tokio::spawn(async move {
+//!             if let Err(err) = connection.await {
+//!                 println!("Error serving HTTP connection: {:?}", err);
+//!             }
+//!         });
+//!     }
 //! }
 //! ```
 

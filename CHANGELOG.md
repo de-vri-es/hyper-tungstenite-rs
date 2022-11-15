@@ -1,4 +1,4 @@
-# Unreleased
+# v0.8.2 - 2022-11-15
 * Update the example to avoid soon-deprecated `hyper` types.
 
 # v0.8.1 - 2022-06-14

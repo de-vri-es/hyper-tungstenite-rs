@@ -1,7 +1,7 @@
 [package]
 name = "hyper-tungstenite"
 description = "websockets for hyper servers using tungstenite"
-version = "0.8.1"
+version = "0.8.2"
 license = "BSD-2-Clause"
 authors = ["Maarten de Vries <maarten@de-vri.es>"]
 keywords = ["websocket", "hyper", "async"]
@@ -9,7 +9,7 @@ categories = ["web-programming::websocket", "network-programming"]
 repository = "https://github.com/de-vri-es/hyper-tungstenite-rs"
 documentation = "https://docs.rs/hyper-tungstenite"
 
-edition = "2018"
+edition = "2021"
 
 [dependencies]
 hyper = { version = "0.14.4" }

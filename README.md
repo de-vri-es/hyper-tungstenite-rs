@@ -26,10 +26,10 @@ use tungstenite::Message;
 type Error = Box<dyn std::error::Error + Send + Sync + 'static>;
 
 /// Handle a HTTP or WebSocket request.
-async fn handle_request(request: Request<Body>) -> Result<Response<Body>, Error> {
+async fn handle_request(mut request: Request<Body>) -> Result<Response<Body>, Error> {
     // Check if the request is a websocket upgrade request.
     if hyper_tungstenite::is_upgrade_request(&request) {
-        let (response, websocket) = hyper_tungstenite::upgrade(request, None)?;
+        let (response, websocket) = hyper_tungstenite::upgrade(&mut request, None)?;
 
         // Spawn a task to handle the websocket connection.
         tokio::spawn(async move {
@@ -74,10 +74,9 @@ async fn serve_websocket(websocket: HyperWebsocket) -> Result<(), Error> {
                     println!("Received close message");
                 }
             },
-            Message::Frame(_) => {
-                // You will never get a raw frame when reading messages.
-                unreachable!();
-            },
+            Message::Frame(msg) => {
+               unreachable!();
+            }
         }
     }
 
@@ -88,10 +87,24 @@ async fn serve_websocket(websocket: HyperWebsocket) -> Result<(), Error> {
 async fn main() -> Result<(), Error> {
     let addr: std::net::SocketAddr = "[::1]:3000".parse()?;
     println!("Listening on http://{}", addr);
-    hyper::Server::bind(&addr).serve(hyper::service::make_service_fn(|_connection| async {
-        Ok::<_, Infallible>(hyper::service::service_fn(handle_request))
-    })).await?;
-    Ok(())
+    let listener = tokio::net::TcpListener::bind(&addr).await?;
+    println!("listening on {}", addr);
+
+    let mut http = hyper::server::conn::Http::new();
+    http.http1_only(true);
+    http.http1_keep_alive(true);
+
+    loop {
+        let (stream, _) = listener.accept().await?;
+        let connection = http
+            .serve_connection(stream, hyper::service::service_fn(handle_request))
+            .with_upgrades();
+        tokio::spawn(async move {
+            if let Err(err) = connection.await {
+                println!("Error serving HTTP connection: {:?}", err);
+            }
+        });
+    }
 }
 ```
 

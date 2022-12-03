@@ -1,3 +1,6 @@
+# main
+* Update `tungstenite` and `tokio-tungstenite` to `v0.18`.
+
 # v0.8.2 - 2022-11-15
 * Update the example to avoid soon-deprecated `hyper` types.
 

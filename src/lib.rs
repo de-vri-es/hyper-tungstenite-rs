@@ -106,6 +106,7 @@
 use hyper::{Body, Request, Response};
 use std::task::{Context, Poll};
 use std::pin::Pin;
+use pin_project_lite::pin_project;
 
 use tungstenite::{Error, error::ProtocolError};
 use tungstenite::handshake::derive_accept_key;
@@ -116,7 +117,7 @@ pub use tungstenite;
 
 pub use tokio_tungstenite::WebSocketStream;
 
-pin_project_lite::pin_project! {
+pin_project! {
 	/// A future that resolves to a websocket stream when the associated HTTP upgrade completes.
 	#[derive(Debug)]
 	pub struct HyperWebsocket {

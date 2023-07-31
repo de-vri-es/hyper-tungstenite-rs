@@ -1,4 +1,4 @@
-# main
+# v0.11.1 - 2023-07-31
 * Replace `pin-project` with `pin-project-lite`.
 
 # v0.11.0 - 2023-07-31

@@ -17,11 +17,13 @@ you can manually inspect the `Connection` and `Upgrade` headers.
 
 ## Example
 ```rust
-use futures::{sink::SinkExt, stream::StreamExt};
+use futures::sink::SinkExt;
+use futures::stream::StreamExt;
 use http_body_util::Full;
-use hyper::{body::{Bytes, Incoming}, Request, Response};
-use hyper_util::rt::TokioIo;
+use hyper::body::{Bytes, Incoming};
+use hyper::{Request, Response};
 use hyper_tungstenite::{tungstenite, HyperWebsocket};
+use hyper_util::rt::TokioIo;
 use tungstenite::Message;
 
 type Error = Box<dyn std::error::Error + Send + Sync + 'static>;

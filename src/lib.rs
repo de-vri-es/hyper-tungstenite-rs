@@ -121,6 +121,9 @@ pub use tungstenite;
 
 pub use tokio_tungstenite::WebSocketStream;
 
+/// A [`WebSocketStream`] that wraps an upgraded HTTP connection from hyper.
+pub type HyperWebsocketStream = WebSocketStream<TokioIo<hyper::upgrade::Upgraded>>;
+
 pin_project! {
 	/// A future that resolves to a websocket stream when the associated HTTP upgrade completes.
 	#[derive(Debug)]
@@ -216,7 +219,7 @@ fn trim_end(data: &[u8]) -> &[u8] {
 }
 
 impl std::future::Future for HyperWebsocket {
-	type Output = Result<WebSocketStream<TokioIo<hyper::upgrade::Upgraded>>, Error>;
+	type Output = Result<HyperWebsocketStream, Error>;
 
 	fn poll(self: Pin<&mut Self>, cx: &mut Context) -> Poll<Self::Output> {
 		let this = self.project();

@@ -1,5 +1,6 @@
 # Unreleased
 * Update `hyper` to version `1.0`.
+* Add public `HyperWebsocketStream` alias.
 
 # v0.11.1 - 2023-07-31
 * Replace `pin-project` with `pin-project-lite`.

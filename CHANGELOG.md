@@ -1,3 +1,6 @@
+# Unreleased
+* Update `hyper` to version `1.0`.
+
 # v0.11.1 - 2023-07-31
 * Replace `pin-project` with `pin-project-lite`.
 

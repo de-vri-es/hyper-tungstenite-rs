@@ -1,6 +1,8 @@
-use hyper::{Body, Request, Response};
-use hyper::server::Server;
-use hyper::service::{service_fn, make_service_fn};
+use http_body_util::Full;
+use hyper::{Request, Response};
+use hyper::body::{Bytes, Incoming};
+use hyper::service::service_fn;
+use hyper_util::rt::TokioIo;
 use hyper_tungstenite::tungstenite::Error;
 use tokio::net::TcpStream;
 use std::net::Ipv6Addr;
@@ -13,16 +15,15 @@ use assert2::{assert, let_assert};
 #[tokio::test]
 async fn hyper() {
 	// Bind a TCP listener to an ephemeral port.
-	let_assert!(Ok(listener) = std::net::TcpListener::bind((Ipv6Addr::LOCALHOST, 0u16)));
+	let_assert!(Ok(listener) = tokio::net::TcpListener::bind((Ipv6Addr::LOCALHOST, 0u16)).await);
 	let_assert!(Ok(bind_addr) = listener.local_addr());
-	let_assert!(Ok(server) = Server::from_tcp(listener));
+	let server = hyper::server::conn::http1::Builder::new();
 
 	// Spawn the server in a task.
 	tokio::spawn(async move {
-		let service = make_service_fn(|_conn| async {
-			Ok::<_, hyper::Error>(service_fn(upgrade_websocket))
-		});
-		let_assert!(Ok(()) = server.http1_only(true).serve(service).await);
+		let service = service_fn(upgrade_websocket);
+		let_assert!(Ok((stream, _)) = listener.accept().await);
+		let_assert!(Ok(()) = server.serve_connection(TokioIo::new(stream), service).with_upgrades().await);
 	});
 
 	// Try to create a websocket connection with the server.
@@ -36,7 +37,7 @@ async fn hyper() {
 	assert!(let Some(Ok(Message::Close(None))) = stream.next().await);
 }
 
-async fn upgrade_websocket(mut request: Request<Body>) -> Result<Response<Body>> {
+async fn upgrade_websocket(mut request: Request<Incoming>) -> Result<Response<Full<Bytes>>> {
 	assert!(hyper_tungstenite::is_upgrade_request(&request) == true);
 
 	let (response, stream) = hyper_tungstenite::upgrade(&mut request, None)

@@ -1,12 +1,14 @@
 use futures::{sink::SinkExt, stream::StreamExt};
-use hyper::{Body, Request, Response};
+use http_body_util::Full;
+use hyper::{body::{Bytes, Incoming}, Request, Response};
+use hyper_util::rt::TokioIo;
 use hyper_tungstenite::{tungstenite, HyperWebsocket};
 use tungstenite::Message;
 
 type Error = Box<dyn std::error::Error + Send + Sync + 'static>;
 
 /// Handle a HTTP or WebSocket request.
-async fn handle_request(mut request: Request<Body>) -> Result<Response<Body>, Error> {
+async fn handle_request(mut request: Request<Incoming>) -> Result<Response<Full<Bytes>>, Error> {
 	// Check if the request is a websocket upgrade request.
 	if hyper_tungstenite::is_upgrade_request(&request) {
 		let (response, websocket) = hyper_tungstenite::upgrade(&mut request, None)?;
@@ -22,7 +24,7 @@ async fn handle_request(mut request: Request<Body>) -> Result<Response<Body>, Er
 		Ok(response)
 	} else {
 		// Handle regular HTTP requests here.
-		Ok(Response::new(Body::from("Hello HTTP!")))
+		Ok(Response::new(Full::<Bytes>::from("Hello HTTP!")))
 	}
 }
 
@@ -69,14 +71,13 @@ async fn main() -> Result<(), Error> {
 	let listener = tokio::net::TcpListener::bind(&addr).await?;
 	println!("Listening on http://{addr}");
 
-	let mut http = hyper::server::conn::Http::new();
-	http.http1_only(true);
-	http.http1_keep_alive(true);
+	let mut http = hyper::server::conn::http1::Builder::new();
+	http.keep_alive(true);
 
 	loop {
 		let (stream, _) = listener.accept().await?;
 		let connection = http
-			.serve_connection(stream, hyper::service::service_fn(handle_request))
+			.serve_connection(TokioIo::new(stream), hyper::service::service_fn(handle_request))
 			.with_upgrades();
 		tokio::spawn(async move {
 			if let Err(err) = connection.await {

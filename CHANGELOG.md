@@ -1,3 +1,6 @@
+# main
+* Update `tungstenite` to `v0.21`.
+
 # v0.12.0 - 2023-11-19
 * Update `hyper` to version `1.0`.
 * Add public `HyperWebsocketStream` type alias.

@@ -1,5 +1,8 @@
+# main
+* Update `tungstenite` and `tokio-tungstenite` to `v0.23`.
+
 # v0.13.0 - 2023-12-11
-* Update `tungstenite` to `v0.21`.
+* Update `tungstenite` and `tokio-tungstenite` to `v0.21`.
 
 # v0.12.0 - 2023-11-19
 * Update `hyper` to version `1.0`.

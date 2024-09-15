@@ -1,4 +1,4 @@
-# main
+# v0.15.0 - 2024-09-15
 * Update `tungstenite` and `tokio-tungstenite` to `v0.24`.
 
 # v0.14.0 - 2024-06-03

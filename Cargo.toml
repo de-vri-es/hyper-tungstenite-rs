@@ -17,8 +17,8 @@ hyper = { version = "1.0.0" }
 hyper-util = { version = "0.1.0", features = ["tokio"] }
 pin-project-lite = "0.2.10"
 tokio = "1.2.0"
-tokio-tungstenite = "0.26.0"
-tungstenite = "0.26.0"
+tokio-tungstenite = "0.27.0"
+tungstenite = "0.27.0"
 
 [dev-dependencies]
 assert2 = "0.3.4"

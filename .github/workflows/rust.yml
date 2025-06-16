@@ -9,9 +9,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@master
+        uses: actions/checkout@v4
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v4
         with:
           path: |
             ~/.cargo/registry
@@ -21,19 +21,11 @@ jobs:
           restore-keys: ${{ runner.os }}-cargo
 
       - name: Build
-        uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: --color=always
-
+        run: cargo build --color=always
       - name: Clippy
         uses: actions-rs/clippy-check@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           args: --color=always
-
       - name: Test
-        uses: actions-rs/cargo@v1
-        with:
-          command: test
-          args: --color=always
+        run: cargo test --color=always

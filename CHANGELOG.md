@@ -1,4 +1,4 @@
-# Unreleased
+# v0.19.0 - 2025-09-29
 * Update `tungstenite` and `tokio-tungstenite` to `v0.28`.
 
 # v0.18.0 - 2025-06-16

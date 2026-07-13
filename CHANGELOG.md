@@ -1,3 +1,7 @@
+# v0.30.0 - 2026-07-13
+* Update `tungstenite` and `tokio-tungstenite` to `v0.30`.
+* Skip to version `0.30` to be in sync.
+
 # v0.20.0 - 2026-05-04
 * Update `tungstenite` and `tokio-tungstenite` to `v0.29`.
 
